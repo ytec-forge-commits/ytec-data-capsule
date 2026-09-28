@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.6.2" />
     <None Include="..\..\config\backup-items.v1.json"
           Link="config\backup-items.v1.json"
           CopyToOutputDirectory="PreserveNewest" />
