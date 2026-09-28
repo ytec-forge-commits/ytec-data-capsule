@@ -1,0 +1,89 @@
+name: Windows build and tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore .\Ytec.WindowsBackup.slnx --locked-mode
+
+      - name: Verify formatting
+        run: dotnet format .\Ytec.WindowsBackup.slnx --verify-no-changes --no-restore
+
+      - name: Verify localization
+        shell: pwsh
+        run: .\eng\Test-Localization.ps1
+
+      - name: Verify public-source boundary
+        shell: pwsh
+        run: .\eng\Test-PublicSource.ps1
+
+  build:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - AnyCPU
+          - x86
+          - x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: >-
+          dotnet restore .\Ytec.WindowsBackup.slnx --locked-mode
+          -p:PlatformTarget=${{ matrix.platform }}
+          -p:Prefer32Bit=false
+          -p:RuntimeIdentifier=
+
+      - name: Rebuild ${{ matrix.platform }}
+        run: >-
+          dotnet build .\Ytec.WindowsBackup.slnx
+          -t:Rebuild
+          -c Release
+          --no-restore
+          -m:1
+          -p:PlatformTarget=${{ matrix.platform }}
+          -p:Prefer32Bit=false
+          -p:RuntimeIdentifier=
+
+      - name: Run regression tests
+        if: matrix.platform == 'AnyCPU'
+        shell: pwsh
+        run: |
+          & '.\tests\Ytec.WindowsBackup.Tests\bin\Release\net461\Ytec.WindowsBackup.Tests.exe'
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }

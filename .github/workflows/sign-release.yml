@@ -1,0 +1,172 @@
+name: Build and request SignPath signing
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: sign-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  sign:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-2022
+    environment: signing
+
+    steps:
+      - name: Checkout the release tag
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Validate tag and source version
+        id: version
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}' -replace '^v', ''
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw 'Run this workflow from a vMAJOR.MINOR.PATCH tag.'
+          }
+          [xml] $props = Get-Content -LiteralPath '.\Directory.Build.props'
+          $sourceVersion = [string] $props.Project.PropertyGroup.Version
+          if ($sourceVersion -ne $version) {
+            throw "Tag version $version does not match source version $sourceVersion."
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Restore
+        run: dotnet restore .\Ytec.WindowsBackup.slnx
+
+      - name: Verify public source and tests
+        shell: pwsh
+        run: |
+          .\eng\Test-PublicSource.ps1
+          .\eng\Test-Localization.ps1
+          dotnet build .\Ytec.WindowsBackup.slnx -t:Rebuild -c Release --no-restore
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & '.\tests\Ytec.WindowsBackup.Tests\bin\Release\net461\Ytec.WindowsBackup.Tests.exe'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Materialize the official compatibility key
+        id: official-key
+        shell: pwsh
+        env:
+          OFFICIAL_KEY_B64: ${{ secrets.YTEC_DATA_CAPSULE_OFFICIAL_KEY_B64 }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:OFFICIAL_KEY_B64)) {
+            throw 'The official compatibility key secret is not configured.'
+          }
+          try {
+            $bytes = [Convert]::FromBase64String($env:OFFICIAL_KEY_B64)
+          }
+          catch {
+            throw 'The official compatibility key secret is not valid Base64.'
+          }
+          if ($bytes.Length -ne 32) {
+            throw 'The decoded official compatibility key must be 32 bytes.'
+          }
+          $keyPath = Join-Path $env:RUNNER_TEMP 'ytec-data-capsule-official-key.bin'
+          [IO.File]::WriteAllBytes($keyPath, $bytes)
+          [Array]::Clear($bytes, 0, $bytes.Length)
+          "path=$keyPath" >> $env:GITHUB_OUTPUT
+
+      - name: Build the unsigned official signing input
+        shell: pwsh
+        run: |
+          .\eng\New-PortableRelease.ps1 `
+            -Version '${{ steps.version.outputs.version }}' `
+            -OfficialKeyFile '${{ steps.official-key.outputs.path }}' `
+            -OutputRoot '.\artifacts\signing'
+
+      - name: Upload unsigned executable for SignPath
+        id: unsigned
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          archive: false
+          if-no-files-found: error
+          path: artifacts/signing/Y-TEC-Data-Capsule-${{ steps.version.outputs.version }}-portable-unsigned/Y-TEC Data Capsule.exe
+          retention-days: 7
+
+      - name: Submit manual-approval signing request
+        id: signpath
+        uses: signpath/github-action-submit-signing-request@c92b958760219087e01f8d67a1669ed57afe2627
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG }}
+          github-artifact-id: ${{ steps.unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          skip-decompress: true
+          output-artifact-directory: artifacts/signed
+          parameters: |
+            version: "${{ steps.version.outputs.version }}"
+
+      - name: Verify signed executable
+        id: signed-exe
+        shell: pwsh
+        run: |
+          $executables = @(Get-ChildItem -LiteralPath '.\artifacts\signed' -Recurse -File -Filter '*.exe')
+          if ($executables.Count -ne 1) {
+            throw "Expected one signed executable, found $($executables.Count)."
+          }
+          $fileVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo($executables[0].FullName)
+          if ($fileVersion.ProductName -ne 'Y-TEC Data Capsule') {
+            throw 'The signed executable has an unexpected product name.'
+          }
+          if ($fileVersion.FileVersion -ne '${{ steps.version.outputs.version }}.0') {
+            throw 'The signed executable has an unexpected file version.'
+          }
+          $signature = Get-AuthenticodeSignature -LiteralPath $executables[0].FullName
+          if ($signature.Status -eq 'NotSigned') {
+            throw 'SignPath returned an unsigned executable.'
+          }
+          "path=$($executables[0].FullName)" >> $env:GITHUB_OUTPUT
+
+      - name: Assemble and verify the signed portable release
+        shell: pwsh
+        run: |
+          .\eng\New-SignedPortableRelease.ps1 `
+            -UnsignedStageDirectory '.\artifacts\signing\Y-TEC-Data-Capsule-${{ steps.version.outputs.version }}-portable-unsigned' `
+            -SignedExePath '${{ steps.signed-exe.outputs.path }}' `
+            -Version '${{ steps.version.outputs.version }}' `
+            -OutputRoot '.\artifacts\final'
+          .\eng\Test-PortableRelease.ps1 `
+            -ZipPath '.\artifacts\final\Y-TEC-Data-Capsule-${{ steps.version.outputs.version }}-portable-signed.zip' `
+            -ExpectedVersion '${{ steps.version.outputs.version }}' `
+            -ExpectedSignature Valid
+
+      - name: Upload signed portable ZIP
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          archive: false
+          if-no-files-found: error
+          path: artifacts/final/Y-TEC-Data-Capsule-${{ steps.version.outputs.version }}-portable-signed.zip
+          retention-days: 7
+
+      - name: Upload signed portable ZIP hash
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          archive: false
+          if-no-files-found: error
+          path: artifacts/final/Y-TEC-Data-Capsule-${{ steps.version.outputs.version }}-portable-signed.zip.sha256
+          retention-days: 7
+
+      - name: Remove the temporary compatibility key
+        if: always()
+        shell: pwsh
+        run: |
+          $keyPath = Join-Path $env:RUNNER_TEMP 'ytec-data-capsule-official-key.bin'
+          if (Test-Path -LiteralPath $keyPath) {
+            Remove-Item -LiteralPath $keyPath -Force
+          }

@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Y-TEC Data Capsule 操作マニュアル</title>
+  <link rel="icon" href="app-icon.png" type="image/png">
+  <style>
+    :root {
+      --ink: #24324a;
+      --muted: #617087;
+      --blue: #4167dc;
+      --blue-soft: #edf2ff;
+      --mint: #168b75;
+      --mint-soft: #e6f8f3;
+      --purple: #7549bf;
+      --purple-soft: #f3edfd;
+      --yellow: #8a5b0b;
+      --yellow-soft: #fff5dc;
+      --line: #dce5f1;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #f5f7fc;
+      font-family: "Yu Gothic UI", "Meiryo UI", "Segoe UI", sans-serif;
+      line-height: 1.75;
+    }
+    main { max-width: 980px; margin: 0 auto; padding: 32px 24px 64px; }
+    .hero {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 24px;
+      align-items: center;
+      padding: 28px;
+      background: linear-gradient(135deg, #edf2ff, #eafaf5);
+      border: 1px solid #d5e1f4;
+      border-radius: 24px;
+    }
+    .hero img { width: 112px; height: 112px; object-fit: contain; }
+    h1 { margin: 0; font-size: 34px; line-height: 1.25; }
+    .subtitle { margin: 6px 0 0; color: var(--muted); font-size: 17px; }
+    .version {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 3px 11px;
+      border-radius: 999px;
+      background: white;
+      color: var(--mint);
+      font-weight: 700;
+    }
+    nav, section {
+      margin-top: 22px;
+      padding: 24px 28px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+    h2 {
+      margin: 0 0 14px;
+      padding-left: 12px;
+      border-left: 6px solid var(--blue);
+      font-size: 24px;
+    }
+    h3 { margin: 22px 0 8px; font-size: 18px; }
+    p { margin: 8px 0; }
+    ul, ol { margin: 8px 0; padding-left: 1.7em; }
+    li + li { margin-top: 5px; }
+    a { color: #315acb; overflow-wrap: anywhere; }
+    .toc { columns: 2; column-gap: 32px; }
+    .toc a { display: block; padding: 4px 0; text-decoration: none; }
+    .mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .mode { padding: 16px; border: 1px solid var(--line); border-radius: 14px; }
+    .mode.blue { background: var(--blue-soft); }
+    .mode.mint { background: var(--mint-soft); }
+    .mode.purple { background: var(--purple-soft); }
+    .step {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: start;
+      margin: 14px 0;
+    }
+    .step-num {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      color: white;
+      background: var(--blue);
+      border-radius: 11px;
+      font-weight: 700;
+    }
+    .note, .warning, .danger {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border: 1px solid;
+      border-radius: 12px;
+    }
+    .note { background: var(--mint-soft); border-color: #bde6da; }
+    .warning { color: #694608; background: var(--yellow-soft); border-color: #efd49b; }
+    .danger { color: #8e3440; background: #fff0f2; border-color: #f1c4ca; }
+    .path { overflow-wrap: anywhere; }
+    table { width: 100%; margin-top: 12px; border-collapse: collapse; font-size: 14px; }
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f2f5fb; }
+    code {
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: #f1f4f9;
+      font-family: Consolas, monospace;
+      font-size: .92em;
+      overflow-wrap: anywhere;
+    }
+    .footer { margin-top: 24px; color: var(--muted); text-align: center; font-size: 12px; }
+    @media (max-width: 700px) {
+      main { padding: 16px 12px 40px; }
+      .hero { grid-template-columns: 72px 1fr; padding: 20px; }
+      .hero img { width: 72px; height: 72px; }
+      h1 { font-size: 25px; }
+      nav, section { padding: 20px; }
+      .toc { columns: 1; }
+      .mode-grid { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media print {
+      @page { size: A4; margin: 13mm 14mm 15mm; }
+      body {
+        background: white;
+        font-size: 10.3pt;
+        line-height: 1.5;
+        line-break: strict;
+        orphans: 3;
+        widows: 3;
+      }
+      main { max-width: none; padding: 0; }
+      .hero, nav, section { border-radius: 10px; box-shadow: none; }
+      nav, section { margin-top: 12px; padding: 16px 18px; }
+      .hero, nav, .mode-grid, .step, .note, .warning, .danger, table, tr {
+        break-inside: avoid-page;
+      }
+      section { break-inside: auto; }
+      #support { break-before: page; break-inside: avoid-page; }
+      h2, h3 {
+        break-after: avoid-page;
+        text-wrap: balance;
+      }
+      p, li, td { text-wrap: pretty; }
+      li { break-inside: avoid-page; }
+      thead { display: table-header-group; }
+      #items,
+      #restore-basics,
+      #thunderbird,
+      #mobilesync,
+      #postcard,
+      #accounting,
+      #bookmark,
+      #trouble {
+        break-before: page;
+      }
+      #restore-basics,
+      #thunderbird,
+      #mobilesync {
+        break-inside: avoid-page;
+      }
+      #postcard {
+        font-size: 9.6pt;
+        line-height: 1.42;
+      }
+      #postcard table { font-size: 9.4pt; }
+      #postcard th, #postcard td { padding: 6px 8px; }
+      #postcard h3 { margin: 14px 0 6px; }
+      #postcard .note, #postcard .warning {
+        margin: 10px 0;
+        padding: 10px 12px;
+      }
+      #postcard li + li { margin-top: 3px; }
+      .page-break { break-before: page; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <img src="app-icon.png" alt="Y-TEC Data Capsule アイコン">
+    <div>
+      <h1>Y-TEC Data Capsule<br>操作マニュアル</h1>
+      <p class="subtitle">バックアップから、新しいPCで使える状態へ戻すところまで</p>
+      <span class="version">1.2.0 再公開版（自己署名）/ マニュアル改訂 2026年9月29日</span>
+    </div>
+  </header>
+
+  <nav aria-label="目次">
+    <h2>目次</h2>
+    <div class="toc">
+      <a href="#before">1. 使用前の確認</a>
+      <a href="#modes">2. 起動時の3モード</a>
+      <a href="#backup">3. データをバックアップする</a>
+      <a href="#items">4. バックアップ項目と出力先</a>
+      <a href="#restore-basics">5. 手動移行・復元の共通手順</a>
+      <a href="#thunderbird">6. Thunderbird</a>
+      <a href="#mobilesync">7. iPhone / iPad（MobileSync）</a>
+      <a href="#postcard">8. 年賀状ソフト</a>
+      <a href="#accounting">9. 会計ソフト</a>
+      <a href="#wifi">10. Wi-Fi設定を復元する</a>
+      <a href="#bookmark">11. ブックマークを復元する</a>
+      <a href="#security">12. 保存先・アクセス権・権利</a>
+      <a href="#trouble">13. 困ったとき</a>
+      <a href="#support">14. 公式配布・お問い合わせ</a>
+    </div>
+  </nav>
+
+  <section id="before">
+    <h2>1. 使用前の確認</h2>
+    <ul>
+      <li>技術的な対応対象はWindows 7 SP1 / 8 / 8.1 / 10 / 11、.NET Framework 4.6.1以降です。AnyCPU版は32ビット・64ビットWindowsに対応しますが、Windows 11には32ビット版OSはありません。</li>
+      <li>ZIPをフォルダーへ展開し、<code>Y-TEC Data Capsule.exe</code>をダブルクリックします。EXEだけを別の場所へ移動しないでください。</li>
+      <li>アプリは管理者権限を自動要求します。ユーザーアカウント制御が表示されたら、入手元を確認して許可します。毎回右クリックして「管理者として実行」を選ぶ必要はありません。</li>
+      <li>1.2.0再公開版のEXEと同梱DLLはY-TECの自己署名方式です。Microsoftや商用CAが信頼する署名ではなく、WindowsやSmartScreenの警告が表示される場合があります。公式配布元と公開されたSHA-256を確認してください。公開鍵証明書を自動登録する処理はありません。</li>
+      <li>外部通信、クラウド同期、アクセス解析は行いません。OneDrive / iCloud等のオンライン専用ファイルも自動ダウンロードしません。</li>
+    </ul>
+    <p>古いWindowsや.NET Framework 4.6.1の技術的対応は、Microsoftによる現在の保守を意味しません。旧OSの互換性は過去の試験記録であり、今回の再公開で全OSを再試験したものではありません。</p>
+    <div class="warning"><strong>バックアップ完了だけで元PCを消さないでください。</strong>移行先PCで必要なファイルを開き、Thunderbird・年賀状・会計・Appleデバイス等は対象ソフトから認識できることまで確認してください。</div>
+  </section>
+
+  <section id="modes">
+    <h2>2. 起動時の3モード</h2>
+    <div class="mode-grid">
+      <div class="mode blue"><strong>1 データバックアップ</strong><br>文書・写真・ブックマーク・メール・年賀状・会計・MobileSync・Wi-Fi設定などを保存します。</div>
+      <div class="mode mint"><strong>2 Wi-Fi設定の復元</strong><br>Data Capsuleで暗号化保存したWi-Fi設定を別PCへ登録します。</div>
+      <div class="mode purple"><strong>3 ブックマークの復元</strong><br>Chrome・Edge・Firefoxのブックマークだけを戻します。</div>
+    </div>
+  </section>
+
+  <section id="backup">
+    <h2>3. データをバックアップする</h2>
+    <div class="step"><span class="step-num">1</span><div><strong>元のWindowsドライブを選ぶ</strong><br>直下に<code>Windows</code>フォルダーがある内蔵・USBドライブだけが表示されます。USBドライブを後から接続した場合は［再検出］を押します。</div></div>
+    <div class="step"><span class="step-num">2</span><div><strong>保存場所を選ぶ</strong><br>外付けSSDなど、新しいバックアップフォルダーを作る親フォルダーを選びます。元のWindowsドライブ内は選べません。</div></div>
+    <div class="step"><span class="step-num">3</span><div><strong>新規フォルダー名を入力する</strong><br>例: <code>20260728丸ごとバックアップ</code>。同名のファイルやフォルダーがある場合は、別名へ変更します。</div></div>
+    <div class="step"><span class="step-num">4</span><div><strong>項目を選ぶ</strong><br>［すべてチェック］［すべて外す］、グループごとのチェック、個別項目の3段階で選べます。グループ名左の矢印で個別項目を開きます。</div></div>
+    <div class="step"><span class="step-num">5</span><div><strong>内容を確認する</strong><br>ファイル数・予定容量・警告・作成先を確認します。オンライン専用ファイルが見つかった場合は、対象外の件数と表示サイズも確認します。設定を変えた場合は、もう一度確認します。</div></div>
+    <div class="step"><span class="step-num">6</span><div><strong>開始する</strong><br>確認画面を読み、開始します。現在のWindowsドライブからブラウザーブックマークを保存する場合は、対象ブラウザーを自動終了します。未保存の入力内容は先に保存してください。</div></div>
+    <div class="note">完了後は［作成したフォルダーを開く］から結果を確認できます。<code>backup-manifest.v1.json</code>にはコピー件数、失敗、警告、ACL結果が記録されます。コピー中は保存先ドライブを抜かないでください。</div>
+  </section>
+
+  <section id="items">
+    <h2>4. バックアップ項目と出力先</h2>
+    <p>バックアップルートの下に<code>data</code>、Wi-Fi設定は<code>windows-settings</code>が作成されます。一般ファイルは元ドライブからの相対位置を残すため、どのユーザーのデータかを判別できます。</p>
+    <table>
+      <thead><tr><th>グループ</th><th>主な内容と注意</th></tr></thead>
+      <tbody>
+        <tr><td>基本データ</td><td>デスクトップ、ドキュメント、ダウンロード、ピクチャ、ミュージック、ビデオ。OneDrive / iCloud等はPC内に完全な実体があるファイルだけをコピーします。</td></tr>
+        <tr><td>ブラウザー</td><td>IE / Chrome / Edge / Firefoxのブックマークのみ。パスワード、Cookie、履歴、セッションは保存しません。</td></tr>
+        <tr><td>メール</td><td>Thunderbird、Outlookデータ、Windows Mail系。使用中ファイルはVSSを試み、取得できなければ警告します。</td></tr>
+        <tr><td>端末データ</td><td>iPhone / iPadのMobileSync。AppData内とユーザーフォルダー直下を両方探索します。</td></tr>
+        <tr><td>Windows設定</td><td>Data Capsuleを実行しているPCのWi-Fi設定を、別PCへ移せる暗号化ファイルとして保存します。</td></tr>
+        <tr><td>年賀状ソフト</td><td>個人ユーザーとPublic / All Usersの住所録候補を別々の項目で探索し、個人分と共有分を混ぜずにソフト別フォルダーへ整理します。対応製品は「8. 年賀状ソフト」を参照してください。</td></tr>
+        <tr><td>会計ソフト</td><td>弥生会計・やよいの青色申告、フリーウェイ経理の候補。公式バックアップを必ず優先します。</td></tr>
+      </tbody>
+    </table>
+    <h3>出力例</h3>
+    <ul>
+      <li><code>D:\20260728丸ごとバックアップ\data\Users\旧ユーザー名\Documents</code></li>
+      <li><code>D:\20260728丸ごとバックアップ\data\年賀状ソフト\筆王</code></li>
+      <li><code>D:\20260728丸ごとバックアップ\data\年賀状ソフト\共有住所録\筆ぐるめ</code></li>
+      <li><code>D:\20260728丸ごとバックアップ\data\会計ソフト\弥生会計・やよいの青色申告</code></li>
+      <li><code>D:\20260728丸ごとバックアップ\windows-settings\wifi</code></li>
+    </ul>
+  </section>
+
+  <section id="restore-basics">
+    <h2>5. 手動移行・復元の共通手順</h2>
+    <p>Wi-Fi設定とブラウザーブックマーク以外は、Data Capsuleが移行先アプリへ自動投入しません。次の順番で安全に戻します。</p>
+    <ol>
+      <li><strong>バックアップルートを保管する:</strong> <code>backup-manifest.v1.json</code>がある一番上のフォルダーを、作業が終わるまで変更・削除しません。</li>
+      <li><strong>移行先アプリを先に入れる:</strong> 可能なら移行元と同じ版、またはメーカーが案内する互換版をインストールし、一度起動して保存先を作ります。</li>
+      <li><strong>移行先アプリを終了する:</strong> コピー対象を使用中のまま上書きしません。タスクトレイに残るアプリも終了します。</li>
+      <li><strong>移行先の現データを退避する:</strong> 既存フォルダーを別名にするか別の場所へコピーし、戻せる状態にします。</li>
+      <li><strong>必要なデータだけをコピーまたは取り込む:</strong> バックアップの<code>data\Users\旧ユーザー名</code>から、移行先の現在のユーザーフォルダーへコピーします。「移動」ではなく「コピー」を使います。</li>
+      <li><strong>対象ソフトで確認する:</strong> ファイルを開き、件数・更新日・年度・アカウント等を確認します。確認できるまで旧PCやバックアップを消しません。</li>
+    </ol>
+    <div class="danger"><strong>AppData全体をまとめて上書きしないでください。</strong>Windowsやアプリの版、ユーザー名が異なると起動不能や設定破損の原因になります。Thunderbird、MobileSync、年賀状、会計は次節以降の手順を使ってください。</div>
+    <h3>基本データの戻し先</h3>
+    <table>
+      <thead><tr><th>バックアップ内</th><th>通常の戻し先</th></tr></thead>
+      <tbody>
+        <tr><td><code>data\Users\旧ユーザー名\Desktop</code></td><td>現在のユーザーのデスクトップ</td></tr>
+        <tr><td><code>...\Documents</code></td><td>現在のユーザーのドキュメント</td></tr>
+        <tr><td><code>...\Pictures</code></td><td>現在のユーザーのピクチャ</td></tr>
+        <tr><td><code>...\Downloads</code></td><td>現在のユーザーのダウンロード。実行ファイルは入手元を再確認してから開きます。</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><strong>OneDrive / iCloud等のクラウド同期フォルダー:</strong> PC内に完全な実体があるファイルだけをコピーします。オンライン専用または一部未取得のファイルは開かずに除外するため、バックアップ中に大容量の自動ダウンロードは行いません。除外件数は確認画面、完了画面、<code>backup-manifest.v1.json</code>で確認できます。必要なファイルだけ事前にダウンロードして再実行するか、移行先で同じクラウドサービスから同期してください。</div>
+  </section>
+
+  <section id="thunderbird">
+    <h2>6. Thunderbird</h2>
+    <h3>バックアップできる範囲</h3>
+    <table>
+      <thead><tr><th>保存するもの</th><th>保存しないもの</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>メール本体、POPやローカルフォルダー、IMAPのローカルデータ、アカウント設定、アドレス帳、フィルター、カレンダー・アドオン等のプロファイル内データ。</td>
+          <td>既知の保存パスワードDB、鍵DB、Cookie、セッション・クラッシュ復旧用ファイル。具体的には<code>logins.json</code>、<code>key3.db</code>、<code>key4.db</code>、<code>signons*</code>、<code>cookies.sqlite*</code>、主な<code>session</code>/<code>recovery</code>ファイルです。</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning">パスワードを除外するため、復元後は各メールアカウントのパスワードを再入力します。IMAPはサーバーから再同期できますが、POP受信済みメールと「ローカルフォルダー」はバックアップが特に重要です。</div>
+
+    <h3>推奨: Thunderbirdのインポートツールで戻す</h3>
+    <ol>
+      <li>移行先へThunderbirdをインストールします。可能なら移行元と同じ版か、より新しい安定版にします。</li>
+      <li>バックアップ内の<code>data\Users\旧ユーザー名\AppData\Roaming\Thunderbird\Profiles\プロファイル名</code>を探します。Windows XP系では<code>Application Data\Thunderbird\Profiles</code>です。</li>
+      <li>Thunderbirdのメニュー［≡］→［ツール］→［設定とデータのインポート］を開きます。</li>
+      <li>［別にインストールしたThunderbirdからインポート］を選び、［プロファイルフォルダーを選択］から手順2のプロファイルを指定します。</li>
+      <li>アカウント設定、メッセージ、アドレス帳など必要な項目を選び、開始します。</li>
+      <li>再起動後、メール件数・ローカルフォルダー・アドレス帳を確認し、求められたパスワードを再入力します。</li>
+    </ol>
+    <p>Mozillaの案内では、ZIPからのインポートは2GBまでです。Data CapsuleはZIP化したThunderbirdプロファイルではないため、容量が大きい場合も上記の「プロファイルフォルダーを選択」を使用します。</p>
+
+    <h3>代替: Thunderbirdフォルダーを丸ごと置き換える</h3>
+    <ol>
+      <li>移行先でThunderbirdを一度起動し、すぐ終了します。</li>
+      <li><code>%APPDATA%</code>を開き、現在の<code>Thunderbird</code>フォルダーを<code>Thunderbird.before-restore</code>等へ改名して退避します。</li>
+      <li>バックアップ内の<code>AppData\Roaming\Thunderbird</code>フォルダーを、移行先の<code>%APPDATA%</code>へコピーします。</li>
+      <li>Thunderbirdを起動して確認します。起動できない場合は退避したフォルダーへ戻し、インポートツールを使用します。</li>
+    </ol>
+    <div class="note">Mozilla公式案内: <a href="https://support.mozilla.org/ja/kb/thunderbird-import">設定とデータをThunderbirdにインポートする</a> / <a href="https://support.mozilla.org/ja/kb/moving-thunderbird-data-to-a-new-computer">Thunderbirdのデータを新しいコンピューターに移動する</a>（リンクを開くにはインターネット接続が必要です）。</div>
+  </section>
+
+  <section id="mobilesync">
+    <h2>7. iPhone / iPad（MobileSync）</h2>
+    <h3>保存する場所</h3>
+    <ul>
+      <li>デスクトップ版iTunes系: <code>data\Users\旧ユーザー名\AppData\Roaming\Apple Computer\MobileSync</code></li>
+      <li>Microsoft Store版iTunes / Appleデバイス系: <code>data\Users\旧ユーザー名\Apple\MobileSync</code></li>
+    </ul>
+    <p>両方が見つかれば両方を保存します。実際の端末バックアップは各<code>MobileSync\Backup</code>配下にある長い英数字名のフォルダーです。フォルダー名や内部ファイルを変更しないでください。</p>
+
+    <h3>移行先で認識させて復元する</h3>
+    <ol>
+      <li>移行先へAppleデバイスアプリ、または利用するiTunesをインストールし、最新版へ更新します。</li>
+      <li>アプリを一度起動します。Appleデバイスアプリなら［一般］→［バックアップを管理］→［エクスプローラーに表示］で、移行先が実際に使用する<code>Backup</code>フォルダーを確認できます。</li>
+      <li>Appleデバイスアプリ / iTunesを完全に終了します。</li>
+      <li>手順2で確認した<code>MobileSync\Backup</code>へ、バックアップ内の<code>MobileSync\Backup</code>にある端末別フォルダーをコピーします。すでに同名フォルダーがある場合は上書きせず、移行先側を先に別の場所へ退避します。</li>
+      <li>アプリを開き、［バックアップを管理］またはiTunesの［編集］→［環境設定］→［デバイス］で、日付と端末名を確認します。</li>
+      <li>iPhone / iPadを接続し、端末側で「このコンピュータを信頼」を許可します。</li>
+      <li>Appleデバイスアプリの［一般］、またはiTunesの［概要］から［バックアップを復元］を選び、目的のバックアップを指定します。</li>
+    </ol>
+    <div class="danger"><strong>暗号化済みローカルバックアップには、作成時のパスワードが必要です。</strong>Data Capsuleはそのパスワードを保存・解除しません。パスワードが分からない暗号化バックアップは復元できません。</div>
+    <p>バックアップが一覧へ出ない場合は、コピー先方式が合っているか、<code>Backup</code>が二重（<code>Backup\Backup</code>）になっていないか、端末別フォルダーの中身を変更していないか確認します。</p>
+    <div class="note">Apple公式案内: <a href="https://support.apple.com/ja-jp/108809">バックアップを探して管理する</a> / <a href="https://support.apple.com/ja-jp/guide/devices-windows/mchla3c8ed03/windows">Windowsでバックアップ・復元する</a>（リンクを開くにはインターネット接続が必要です）。</div>
+  </section>
+
+  <section id="postcard">
+    <h2>8. 年賀状ソフト</h2>
+    <p>Data Capsuleは次の製品の住所録候補を、個人住所録と共有住所録に分けて分類します。バックアップ画面で「年賀状ソフト」グループをまとめてチェックすると、個人用と共有用の両項目を選択できます。</p>
+    <table>
+      <thead><tr><th>画面の項目</th><th>探索する場所</th><th>保存先</th></tr></thead>
+      <tbody>
+        <tr><td>年賀状ソフト・住所録データ</td><td>各ユーザーのDocuments / My Documents / Desktop</td><td><code>data\年賀状ソフト\製品名</code></td></tr>
+        <tr><td>年賀状ソフト・共有住所録データ</td><td><code>Users\Public\Documents</code>、<code>Users\Public\Desktop</code>、旧WindowsのAll Users相当</td><td><code>data\年賀状ソフト\共有住所録\製品名</code></td></tr>
+      </tbody>
+    </table>
+    <div class="note">たとえば筆ぐるめの<code>Public\Documents\みんなの筆ぐるめ</code>にある<code>.FGA</code>住所録は、<code>data\年賀状ソフト\共有住所録\筆ぐるめ</code>へ保存します。個人ユーザーの住所録とは混ざりません。</div>
+    <h3>対応製品と主な対象</h3>
+    <table>
+      <thead><tr><th>対応製品</th><th>主な対象</th></tr></thead>
+      <tbody>
+        <tr><td>筆王</td><td><code>.FZD</code></td></tr>
+        <tr><td>筆ぐるめ</td><td><code>.FGA</code></td></tr>
+        <tr><td>筆まめ</td><td><code>.FWA</code> / <code>.FWB</code> / <code>.SDL</code></td></tr>
+        <tr><td>楽々はがき</td><td><code>.JSR</code></td></tr>
+        <tr><td>宛名職人</td><td><code>.ATA</code></td></tr>
+        <tr><td>筆休め</td><td><code>.FYA</code></td></tr>
+        <tr><td>はがきスタジオ</td><td><code>.HSA</code> / <code>.HSD</code></td></tr>
+        <tr><td>はがき作家</td><td><code>.HWA</code> / <code>.HWC</code> / <code>.HWL</code></td></tr>
+        <tr><td>はがきデザインキット</td><td>ユーザーデータフォルダー候補</td></tr>
+      </tbody>
+    </table>
+    <h3>移行・復元の手順</h3>
+    <ol>
+      <li>移行先に同じ製品の対応版をインストールします。</li>
+      <li>製品を起動し、［住所録を開く］［他形式から取り込む］［バックアップから復元］等、メーカーが案内する操作を選びます。</li>
+      <li>個人用は<code>data\年賀状ソフト\製品名</code>、共有用は<code>data\年賀状ソフト\共有住所録\製品名</code>から対象ファイルを指定します。</li>
+      <li>氏名・郵便番号・住所・件数を確認します。印刷前に必ずプレビューします。</li>
+    </ol>
+    <div class="warning">製品や版によって住所録形式が変わることがあります。Data Capsuleは住所録候補のコピーと分類までを行い、製品内への自動復元は行いません。メーカーの公式移行手順がある場合は、そちらを優先してください。</div>
+  </section>
+
+  <section id="accounting">
+    <h2>9. 会計ソフト</h2>
+    <div class="danger"><strong>会計データ機能は実装済みで、合成データによる検出・分類・コピーは確認済みですが、実会計ソフトでの読込受入はリリース判断により省略しています。</strong>Data Capsuleだけを唯一のバックアップ手段にしないでください。</div>
+    <h3>現在の自動対象</h3>
+    <ul>
+      <li>弥生会計 / やよいの青色申告: Documents内の事業所データ候補</li>
+      <li>フリーウェイ経理: 選択したWindowsドライブ直下の<code>KAIKEI_K</code></li>
+    </ul>
+    <h3>移行・復元の手順</h3>
+    <ol>
+      <li>移行元で会計ソフトを起動し、メーカーまたは販売店の公式手順でバックアップデータを作成します。</li>
+      <li>Data Capsuleの会計項目は、公式バックアップに追加する補助コピーとして実行します。</li>
+      <li>移行先へ対象会計ソフトの対応版をインストールします。</li>
+      <li>会計ソフト内の［バックアップの復元］［事業所データを開く］等を使い、まず公式バックアップから復元します。</li>
+      <li>Data Capsuleのコピーを使う必要がある場合は、<code>data\会計ソフト\製品名</code>からメーカー指定の場所へコピーし、製品の「開く」操作で指定します。</li>
+      <li>事業所名、会計年度、期首・期末、残高、仕訳件数を照合します。</li>
+    </ol>
+    <p>PCA会計、ブルーリターンAなど、ソフト内で専用バックアップ作成が必要な製品は自動対象外です。各製品の公式バックアップ・復元手順だけを使用してください。</p>
+  </section>
+
+  <section id="wifi">
+    <h2>10. Wi-Fi設定を復元する</h2>
+    <ol>
+      <li>起動画面で［Wi-Fi設定の復元］を選びます。</li>
+      <li>［一番上のフォルダーを選択］を押し、例 <code>D:\20260728丸ごとバックアップ</code>のようなバックアップルートを選びます。</li>
+      <li>内部の<code>windows-settings\wifi\wifi-profiles.ywbwifi</code>は自動検出されます。</li>
+      <li>警告を確認し、［Wi-Fi設定を復元］を押します。</li>
+      <li>WindowsのWi-Fi一覧から目的のSSIDへ接続できることを確認します。</li>
+    </ol>
+    <div class="warning">同名SSIDの設定がある場合は更新される可能性があります。SSIDとパスワードは画面・ログへ表示しません。暗号化は平文露出防止を目的としたアプリ内蔵鍵方式で、EXEを詳しく解析できる相手への耐性は限定的です。</div>
+  </section>
+
+  <section id="bookmark">
+    <h2>11. ブックマークを復元する</h2>
+    <ol>
+      <li>起動画面で［ブラウザーブックマークの復元］を選びます。</li>
+      <li>バックアップの一番上のフォルダーを選びます。内部の対象ファイルは自動検出されます。</li>
+      <li>復元したいバックアップ元ユーザー・ブラウザープロファイルを選びます。</li>
+      <li>未保存のフォーム入力等を保存して開始します。対象ブラウザーへ通常終了を依頼し、残るバックグラウンドプロセスは強制終了します。</li>
+      <li>Chrome / Edgeは復元先を確認します。現在の<code>Bookmarks</code>と<code>Bookmarks.bak</code>を退避してから置き換えます。</li>
+      <li>Firefoxはファイル検証後に場所が開きます。Firefoxの［ブックマークを管理］→［インポートとバックアップ］→［復元］→［ファイルを選択］で指定します。</li>
+      <li>ブラウザーを起動し、ブックマークバーとフォルダー構成を確認します。</li>
+    </ol>
+    <div class="note">復元するのはブックマークだけです。パスワード、Cookie、履歴、セッションには触れません。ブラウザープロセスの実行ファイルを安全に特定できない場合は処理を開始せず、手動終了を案内します。</div>
+  </section>
+
+  <section id="security">
+    <h2>12. 保存先・アクセス権・権利</h2>
+    <table>
+      <thead><tr><th>保存先</th><th>動作</th></tr></thead>
+      <tbody>
+        <tr><td>NTFS / ReFS</td><td>完了後、今回作成したバックアップフォルダー配下だけをEveryone所有者・フルアクセスに変更します。元データの所有者・ACLは変更しません。</td></tr>
+        <tr><td>exFAT</td><td>バックアップできます。所有者・ACLを保存できないため、Everyone設定は行いません。</td></tr>
+        <tr><td>FAT32</td><td>4GB超ファイル等の制約があるため、実行前に拒否します。</td></tr>
+      </tbody>
+    </table>
+    <div class="warning">EveryoneフルアクセスやexFATは、接続できる利用者がバックアップを読み書きしやすい状態です。個人情報を含むバックアップは、施錠保管、BitLocker等のドライブ暗号化、不要後の安全な消去を検討してください。</div>
+    <h3>権利と利用条件</h3>
+    <ul>
+      <li>Y-TECが権利を持つコード、文書、アイコン、スクリーンショットはApache License 2.0で公開しています。</li>
+      <li>同ライセンスに従って改変、商用利用、再配布できます。ライセンス、NOTICE、第三者表記を保持してください。</li>
+      <li>派生版はY-TEC公式版ではないことを明示し、公式コード署名や公式配布元について誤認させないでください。</li>
+      <li>製品名、会社名、商標は各権利者に帰属します。本アプリは各製品メーカーの公式製品ではありません。</li>
+      <li>詳細は同梱の<code>LICENSE.txt</code>、<code>NOTICE</code>、<code>BRAND_POLICY.md</code>、<code>ASSET_PROVENANCE.md</code>、<code>THIRD-PARTY-NOTICES.txt</code>を確認してください。</li>
+    </ul>
+  </section>
+
+  <section id="trouble">
+    <h2>13. 困ったとき</h2>
+    <table>
+      <thead><tr><th>症状</th><th>確認すること</th></tr></thead>
+      <tbody>
+        <tr><td>元ドライブが表示されない</td><td>ドライブ直下にWindowsフォルダーがあるか、USBが認識されているか確認し、［再検出］を押します。</td></tr>
+        <tr><td>開始できない</td><td>管理者権限、新規フォルダー名、同名の有無、空き容量、保存先形式、内容確認の再実行を確認します。</td></tr>
+        <tr><td>Wi-Fi / ブックマークが見つからない</td><td>内部フォルダーではなく、<code>backup-manifest.v1.json</code>がある一番上のフォルダーを選びます。</td></tr>
+        <tr><td>ブラウザーを終了できない</td><td>未保存内容を保存し、対象ブラウザーとバックグラウンド常駐を手動終了して再実行します。</td></tr>
+        <tr><td>Thunderbirdに入らない</td><td>実際の<code>Profiles\プロファイル名</code>を選んだか、移行元と同じ版または新しい版か確認します。丸ごと置換前の退避へ戻せます。</td></tr>
+        <tr><td>MobileSyncが一覧に出ない</td><td>Appleアプリの［バックアップを管理］から実際の保存先を開き、<code>Backup\Backup</code>の二重構造やフォルダー名変更がないか確認します。</td></tr>
+        <tr><td>OneDrive / iCloudの件数が少ない</td><td>オンライン専用ファイルは自動ダウンロードせず対象外にします。必要なファイルだけPCへダウンロードして新しいバックアップフォルダー名で再実行するか、移行先で同じクラウドサービスから同期します。</td></tr>
+        <tr><td>一部ファイルが失敗した</td><td><code>backup-manifest.v1.json</code>の警告を確認し、対象アプリを終了して新しいフォルダー名で再実行します。</td></tr>
+        <tr><td>マニュアルが開かない</td><td>EXEだけを移動せず、ZIPを展開し直してください。PDF版は<code>操作マニュアル</code>フォルダーにあります。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="support">
+    <h2>14. 公式配布・お問い合わせ</h2>
+    <p>紹介ページ・ダウンロード: <a href="https://ytec.cloudfree.jp/forge/projects/data-capsule/">https://ytec.cloudfree.jp/forge/projects/data-capsule/</a></p>
+    <p>連絡先: <a href="https://ytec.cloudfree.jp/forge/contact/">https://ytec.cloudfree.jp/forge/contact/</a></p>
+    <p>更新時は、公式紹介ページから新しいZIPを入手し、別のフォルダーへ展開してください。作成済みバックアップは保存したままにし、元PCのデータを消さないでください。</p>
+    <p>お問い合わせにはアプリの版、Windowsの版、操作とエラーの概要を記載してください。実バックアップ、個人情報、Wi-FiのSSID・パスワード、認証情報は送らないでください。上記リンクを開くときだけインターネット接続が必要です。</p>
+  </section>
+
+  <p class="footer">Y-TEC Data Capsule 操作マニュアル 1.2.0 - 外部通信・クラウド同期なし</p>
+</main>
+</body>
+</html>

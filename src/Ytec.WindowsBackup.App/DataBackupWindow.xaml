@@ -1,0 +1,385 @@
+<Window x:Class="Ytec.WindowsBackup.App.DataBackupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{DynamicResource DataWindowTitle}"
+        Width="1220"
+        Height="700"
+        MinWidth="720"
+        MinHeight="560"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource AppBackgroundBrush}"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="24,20,24,28">
+            <Border Margin="4,0,4,18"
+                    Style="{StaticResource PageHeaderStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="62" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="48"
+                            Height="48"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="{StaticResource AccentGradientBrush}"
+                            CornerRadius="16">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="White"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Text="1" />
+                    </Border>
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource PageTitleStyle}"
+                                   Text="{DynamicResource DataTitle}" />
+                        <TextBlock Style="{StaticResource PageSubtitleStyle}"
+                                   Text="{DynamicResource DataSubtitle}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                        <Button Padding="15,7"
+                                Content="{DynamicResource BackButton}"
+                                Click="Back_Click" />
+                        <Border Margin="0,7,0,0"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource VersionPillStyle}">
+                            <TextBlock Text="{DynamicResource DataVersion}"
+                                       Foreground="{StaticResource MintDarkBrush}"
+                                       FontSize="12"
+                                       FontWeight="SemiBold" />
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Margin="4,0,4,18"
+                    Style="{StaticResource WarningCardStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="44" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="32"
+                            Height="32"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="#FFE5AE"
+                            CornerRadius="10">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource WarningDarkBrush}"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Text="!" />
+                    </Border>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{DynamicResource DataAclImportant}"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource WarningDarkBrush}"
+                                   TextWrapping="Wrap" />
+                        <TextBlock x:Name="ElevationNoticeText"
+                                   Margin="0,4,0,0"
+                                   Text="{DynamicResource DataAclDetail}"
+                                   Foreground="{StaticResource WarningDarkBrush}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <WrapPanel HorizontalAlignment="Center">
+                <Border Width="520"
+                        Margin="6"
+                        Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource HeadingStyle}"
+                                   Text="{DynamicResource DataSection1}" />
+
+                        <TextBlock Margin="0,16,0,6"
+                                   FontWeight="SemiBold"
+                                   Text="{DynamicResource DataSourceLabel}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ComboBox x:Name="SourceDriveComboBox"
+                                      ItemsSource="{Binding SourceDrives}"
+                                      DisplayMemberPath="DisplayName"
+                                      SelectedValuePath="RootPath"
+                                      AutomationProperties.Name="{DynamicResource DataSourceAutomation}"
+                                      SelectionChanged="PlanInput_Changed" />
+                            <Button x:Name="RefreshSourceDrivesButton"
+                                    Grid.Column="1"
+                                    Margin="8,0,0,0"
+                                    Content="{DynamicResource RefreshButton}"
+                                    Click="RefreshSourceDrives_Click" />
+                        </Grid>
+                        <TextBlock Margin="2,5,2,0"
+                                   Foreground="{StaticResource MutedBrush}"
+                                   FontSize="12"
+                                   Text="{DynamicResource DataSourceHint}"
+                                   TextWrapping="Wrap" />
+
+                        <TextBlock Margin="0,14,0,6"
+                                   FontWeight="SemiBold"
+                                   Text="{DynamicResource DataDestinationLabel}" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="DestinationTextBox"
+                                     AutomationProperties.Name="{DynamicResource DataDestinationAutomation}"
+                                     TextChanged="PlanInput_Changed" />
+                            <Button x:Name="BrowseDestinationButton"
+                                    Grid.Column="1"
+                                    Margin="8,0,0,0"
+                                    Content="{DynamicResource BrowseButton}"
+                                    Click="BrowseDestination_Click" />
+                        </Grid>
+
+                        <TextBlock Margin="0,13,0,6"
+                                   FontWeight="SemiBold"
+                                   Text="{DynamicResource DataFolderNameLabel}" />
+                        <TextBox x:Name="BackupFolderNameTextBox"
+                                 AutomationProperties.Name="{DynamicResource DataFolderNameAutomation}"
+                                 MaxLength="100"
+                                 TextChanged="PlanInput_Changed" />
+                        <TextBlock Margin="2,5,2,0"
+                                   Foreground="{StaticResource MutedBrush}"
+                                   FontSize="12"
+                                   Text="{DynamicResource DataFolderExample}"
+                                   TextWrapping="Wrap" />
+                        <Border Margin="0,8,0,0"
+                                Padding="10,7"
+                                Background="{StaticResource MintSoftBrush}"
+                                BorderBrush="#BCE8D6"
+                                BorderThickness="1"
+                                CornerRadius="9">
+                            <TextBlock x:Name="FinalDestinationText"
+                                       AutomationProperties.Name="{DynamicResource DataDestinationPreviewAutomation}"
+                                       Foreground="{StaticResource MintDarkBrush}"
+                                       Text="{DynamicResource DataDestinationEmpty}"
+                                       TextTrimming="CharacterEllipsis"
+                                       ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                        </Border>
+
+                        <Grid Margin="0,16,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock FontWeight="SemiBold"
+                                           Text="{DynamicResource DataItemsHeading}" />
+                                <TextBlock x:Name="SelectionSummaryText"
+                                           Margin="0,2,0,0"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           FontSize="12"
+                                           Text="{DynamicResource DataItemsLoading}" />
+                                <TextBlock Margin="0,2,0,0"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           FontSize="11"
+                                           Text="{DynamicResource DataGroupHint}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal">
+                                <Button x:Name="SelectAllButton"
+                                        Padding="10,5"
+                                        Content="{DynamicResource SelectAllButton}"
+                                        Click="SelectAll_Click" />
+                                <Button x:Name="ClearAllButton"
+                                        Margin="6,0,0,0"
+                                        Padding="10,5"
+                                        Content="{DynamicResource ClearAllButton}"
+                                        Click="ClearAll_Click" />
+                            </StackPanel>
+                        </Grid>
+                        <Border x:Name="BackupItemsPanel"
+                                Height="310"
+                                Padding="9,7"
+                                Style="{StaticResource SoftSurfaceStyle}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl ItemsSource="{Binding ItemGroups}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="0,0,0,8"
+                                                    Padding="9,7"
+                                                    Background="White"
+                                                    BorderBrush="#E0E5F2"
+                                                    BorderThickness="1"
+                                                    CornerRadius="9">
+                                                <Expander IsExpanded="False">
+                                                    <Expander.Header>
+                                                        <CheckBox Margin="3,2,1,2"
+                                                                  IsThreeState="True"
+                                                                  IsChecked="{Binding SelectedState, Mode=TwoWay}"
+                                                                  AutomationProperties.Name="{Binding GroupAutomationName}"
+                                                                  Checked="PlanInput_Changed"
+                                                                  Unchecked="PlanInput_Changed"
+                                                                  Indeterminate="PlanInput_Changed">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock FontWeight="Bold"
+                                                                           Foreground="{StaticResource InkBrush}"
+                                                                           Text="{Binding Category}" />
+                                                                <TextBlock Margin="8,0,0,0"
+                                                                           Foreground="{StaticResource MutedBrush}"
+                                                                           FontSize="12"
+                                                                           Text="{Binding SelectionSummary}" />
+                                                            </StackPanel>
+                                                        </CheckBox>
+                                                    </Expander.Header>
+                                                    <ItemsControl Margin="27,5,0,0"
+                                                                  ItemsSource="{Binding Items}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <CheckBox Margin="2,4"
+                                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                                          AutomationProperties.Name="{Binding DisplayName}"
+                                                                          Checked="PlanInput_Changed"
+                                                                          Unchecked="PlanInput_Changed">
+                                                                    <StackPanel>
+                                                                        <TextBlock FontWeight="SemiBold"
+                                                                                   Text="{Binding DisplayName}" />
+                                                                        <TextBlock Margin="0,2,0,0"
+                                                                                   Foreground="{StaticResource MutedBrush}"
+                                                                                   FontSize="12"
+                                                                                   Text="{Binding Description}"
+                                                                                   TextWrapping="Wrap" />
+                                                                    </StackPanel>
+                                                                </CheckBox>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Expander>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
+
+                        <!-- Keep the confirmation action below the grouped item list. -->
+                        <Button x:Name="PlanButton"
+                                Margin="0,16,0,0"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Content="{DynamicResource DataPlanButton}"
+                                Click="PlanButton_Click" />
+                    </StackPanel>
+                </Border>
+
+                <Border Width="560"
+                        Margin="6"
+                        Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource HeadingStyle}"
+                                   Text="{DynamicResource DataSection2}" />
+
+                        <Border Margin="0,16,0,12"
+                                Padding="14"
+                                Background="{StaticResource AccentSoftBrush}"
+                                BorderBrush="#D2DCFF"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Foreground="{StaticResource MutedBrush}" Text="{DynamicResource DataTargetFiles}" />
+                                    <TextBlock x:Name="FileCountText"
+                                               Margin="0,3,0,0"
+                                               FontSize="25"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource InkBrush}"
+                                               Text="{DynamicResource NotChecked}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Foreground="{StaticResource MutedBrush}" Text="{DynamicResource DataPlannedSize}" />
+                                    <TextBlock x:Name="TotalSizeText"
+                                               Margin="0,3,0,0"
+                                               FontSize="25"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource InkBrush}"
+                                               Text="{DynamicResource NotChecked}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <TextBlock FontWeight="SemiBold" Text="{DynamicResource DataWarningsHeading}" />
+                        <Border Height="105"
+                                Margin="0,6,0,12"
+                                Padding="10"
+                                Style="{StaticResource SoftSurfaceStyle}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <TextBlock x:Name="WarningsText"
+                                           Text="{DynamicResource DataWarningsInitial}"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource MutedBrush}" />
+                            </ScrollViewer>
+                        </Border>
+
+                        <TextBlock FontWeight="SemiBold" Text="{DynamicResource DataPreviewHeading}" />
+                        <ListBox x:Name="PreviewListBox"
+                                 Height="142"
+                                 Margin="0,6,0,12"
+                                 AutomationProperties.Name="{DynamicResource DataPreviewAutomation}" />
+
+                        <ProgressBar x:Name="BackupProgressBar"
+                                     Height="16"
+                                     Minimum="0"
+                                     Maximum="100"
+                                     AutomationProperties.Name="{DynamicResource DataProgressAutomation}"
+                                     Value="0" />
+                        <TextBlock x:Name="StatusText"
+                                   Margin="0,7,0,0"
+                                   AutomationProperties.Name="{DynamicResource DataStatusAutomation}"
+                                   Text="{DynamicResource Waiting}"
+                                   Foreground="{StaticResource MutedBrush}"
+                                   TextWrapping="Wrap" />
+
+                        <Grid Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="StartButton"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Content="{DynamicResource DataStartButton}"
+                                    IsEnabled="False"
+                                    Click="StartButton_Click" />
+                            <Button x:Name="CancelButton"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    Style="{StaticResource DangerButtonStyle}"
+                                    Content="{DynamicResource CancelButton}"
+                                    IsEnabled="False"
+                                    Click="CancelButton_Click" />
+                        </Grid>
+
+                        <Button x:Name="OpenOutputButton"
+                                Margin="0,10,0,0"
+                                Content="{DynamicResource DataOpenOutputButton}"
+                                IsEnabled="False"
+                                Click="OpenOutputButton_Click" />
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+
+            <TextBlock Margin="8,14,8,0"
+                       HorizontalAlignment="Center"
+                       Foreground="{StaticResource MutedBrush}"
+                       Text="{DynamicResource DataFooter}"
+                       TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</Window>

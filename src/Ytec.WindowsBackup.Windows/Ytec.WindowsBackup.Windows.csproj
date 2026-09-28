@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <RootNamespace>Ytec.WindowsBackup.Windows</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ytec.WindowsBackup.Core\Ytec.WindowsBackup.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Management" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(YtecDataCapsuleOfficialKeyFile)' != ''">
+    <EmbeddedResource Include="$(YtecDataCapsuleOfficialKeyFile)"
+                      LogicalName="Ytec.WindowsBackup.Windows.OfficialApplicationKey"
+                      Link="OfficialApplicationKey.bin" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(YtecDataCapsuleCustomKeyFile)' != ''">
+    <EmbeddedResource Include="$(YtecDataCapsuleCustomKeyFile)"
+                      LogicalName="Ytec.WindowsBackup.Windows.CustomApplicationKey"
+                      Link="CustomApplicationKey.bin" />
+  </ItemGroup>
+  <Target Name="RejectMultipleApplicationKeys"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(YtecDataCapsuleOfficialKeyFile)' != '' and '$(YtecDataCapsuleCustomKeyFile)' != ''">
+    <Error Text="公式アプリ鍵とカスタム鍵は同時に指定できません。" />
+  </Target>
+  <Target Name="ValidateOfficialApplicationKey"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(YtecDataCapsuleOfficialKeyFile)' != ''">
+    <Error Condition="!Exists('$(YtecDataCapsuleOfficialKeyFile)')"
+           Text="指定された公式アプリ鍵ファイルが見つかりません。" />
+  </Target>
+  <Target Name="ValidateCustomApplicationKey"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(YtecDataCapsuleCustomKeyFile)' != ''">
+    <Error Condition="!Exists('$(YtecDataCapsuleCustomKeyFile)')"
+           Text="指定されたカスタム鍵ファイルが見つかりません。" />
+  </Target>
+</Project>

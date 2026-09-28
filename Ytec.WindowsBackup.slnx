@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ytec.WindowsBackup.App/Ytec.WindowsBackup.App.csproj" />
+    <Project Path="src/Ytec.WindowsBackup.Core/Ytec.WindowsBackup.Core.csproj" />
+    <Project Path="src/Ytec.WindowsBackup.Windows/Ytec.WindowsBackup.Windows.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ytec.WindowsBackup.Tests/Ytec.WindowsBackup.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>1.2.0</Version>
+    <Company>Y-TEC</Company>
+    <Copyright>Copyright © Y-TEC 2026</Copyright>
+  </PropertyGroup>
+</Project>

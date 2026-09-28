@@ -1,0 +1,118 @@
+name: Build unsigned official portable release
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-2022
+    environment: release
+
+    steps:
+      - name: Checkout the release tag
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Validate tag and source version
+        id: version
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}' -replace '^v', ''
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            throw 'Run this workflow from a vMAJOR.MINOR.PATCH tag.'
+          }
+          [xml] $props = Get-Content -LiteralPath '.\Directory.Build.props'
+          $sourceVersion = [string] $props.Project.PropertyGroup.Version
+          if ($sourceVersion -ne $version) {
+            throw "Tag version $version does not match source version $sourceVersion."
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Restore
+        run: dotnet restore .\Ytec.WindowsBackup.slnx
+
+      - name: Verify source and behavior
+        shell: pwsh
+        run: |
+          .\eng\Test-PublicSource.ps1
+          .\eng\Test-Localization.ps1
+          dotnet format .\Ytec.WindowsBackup.slnx --verify-no-changes --no-restore
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet build .\Ytec.WindowsBackup.slnx -t:Rebuild -c Release --no-restore
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & '.\tests\Ytec.WindowsBackup.Tests\bin\Release\net461\Ytec.WindowsBackup.Tests.exe'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Materialize the official compatibility key
+        id: official-key
+        shell: pwsh
+        env:
+          OFFICIAL_KEY_B64: ${{ secrets.YTEC_DATA_CAPSULE_OFFICIAL_KEY_B64 }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:OFFICIAL_KEY_B64)) {
+            throw 'The official compatibility key secret is not configured.'
+          }
+          try {
+            $bytes = [Convert]::FromBase64String($env:OFFICIAL_KEY_B64)
+          }
+          catch {
+            throw 'The official compatibility key secret is not valid Base64.'
+          }
+          if ($bytes.Length -ne 32) {
+            throw 'The decoded official compatibility key must be 32 bytes.'
+          }
+          $keyPath = Join-Path $env:RUNNER_TEMP 'ytec-data-capsule-official-key.bin'
+          [IO.File]::WriteAllBytes($keyPath, $bytes)
+          [Array]::Clear($bytes, 0, $bytes.Length)
+          "path=$keyPath" >> $env:GITHUB_OUTPUT
+
+      - name: Build and verify unsigned official package
+        shell: pwsh
+        run: |
+          .\eng\New-PortableRelease.ps1 `
+            -Version '${{ steps.version.outputs.version }}' `
+            -OfficialKeyFile '${{ steps.official-key.outputs.path }}' `
+            -OutputRoot '.\artifacts\release'
+          .\eng\Test-PortableRelease.ps1 `
+            -ZipPath '.\artifacts\release\Y-TEC-Data-Capsule-${{ steps.version.outputs.version }}-portable-unsigned.zip' `
+            -ExpectedVersion '${{ steps.version.outputs.version }}' `
+            -ExpectedSignature NotSigned
+
+      - name: Upload unsigned portable ZIP
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          archive: false
+          if-no-files-found: error
+          path: artifacts/release/Y-TEC-Data-Capsule-${{ steps.version.outputs.version }}-portable-unsigned.zip
+          retention-days: 7
+
+      - name: Upload unsigned portable ZIP hash
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          archive: false
+          if-no-files-found: error
+          path: artifacts/release/Y-TEC-Data-Capsule-${{ steps.version.outputs.version }}-portable-unsigned.zip.sha256
+          retention-days: 7
+
+      - name: Remove the temporary compatibility key
+        if: always()
+        shell: pwsh
+        run: |
+          $keyPath = Join-Path $env:RUNNER_TEMP 'ytec-data-capsule-official-key.bin'
+          if (Test-Path -LiteralPath $keyPath) {
+            Remove-Item -LiteralPath $keyPath -Force
+          }

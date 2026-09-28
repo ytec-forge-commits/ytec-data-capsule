@@ -1,0 +1,268 @@
+<Window x:Class="Ytec.WindowsBackup.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Y-TEC Data Capsule"
+        Width="980"
+        Height="650"
+        MinWidth="720"
+        MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource AppBackgroundBrush}">
+    <Grid ClipToBounds="True">
+        <Canvas IsHitTestVisible="False"
+                Opacity="0.62">
+            <Ellipse Canvas.Top="-95"
+                     Canvas.Right="-45"
+                     Width="260"
+                     Height="260"
+                     Fill="#CFE0FF" />
+            <Ellipse Canvas.Top="120"
+                     Canvas.Left="-100"
+                     Width="210"
+                     Height="210"
+                     Fill="#D8F5ED" />
+            <Ellipse Canvas.Top="445"
+                     Canvas.Right="90"
+                     Width="150"
+                     Height="150"
+                     Fill="#E9DDFB" />
+        </Canvas>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="46,26,46,30">
+                <Button HorizontalAlignment="Right"
+                        Margin="0,0,0,8"
+                        Padding="15,6"
+                        Content="{DynamicResource LanguageSwitch}"
+                        AutomationProperties.Name="{DynamicResource LanguageSwitchAutomation}"
+                        Click="ToggleLanguage_Click" />
+                <Border HorizontalAlignment="Center"
+                        Padding="14,6"
+                        Background="#EAF0FF"
+                        BorderBrush="#C9D7FF"
+                        BorderThickness="1"
+                        CornerRadius="16">
+                    <TextBlock Foreground="{StaticResource AccentDarkBrush}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Text="{DynamicResource MainTagline}" />
+                </Border>
+                <TextBlock Margin="0,10,0,0"
+                           HorizontalAlignment="Center"
+                           FontSize="31"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource InkBrush}"
+                           Text="{DynamicResource MainQuestion}" />
+                <TextBlock Margin="0,6,0,22"
+                           HorizontalAlignment="Center"
+                           Foreground="{StaticResource MutedBrush}"
+                           FontSize="15"
+                           Text="{DynamicResource MainDescription}" />
+
+                <Border x:Name="DevelopmentBuildWarning"
+                        Margin="0,0,0,16"
+                        Style="{StaticResource WarningCardStyle}"
+                        Visibility="Collapsed">
+                    <TextBlock Foreground="{StaticResource WarningDarkBrush}"
+                               FontWeight="SemiBold"
+                               Text="{DynamicResource DevelopmentBuildWarning}"
+                               TextWrapping="Wrap" />
+                </Border>
+
+                <Button Margin="0,0,0,14"
+                        Style="{StaticResource ModeCardButtonStyle}"
+                        Background="#F8FAFF"
+                        BorderBrush="#C8D5FF"
+                        Click="OpenDataBackup_Click"
+                        AutomationProperties.Name="{DynamicResource MainBackupAutomation}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="72" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="54"
+                                Height="54"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AccentGradientBrush}"
+                                CornerRadius="18">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="23"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       Text="1" />
+                        </Border>
+                        <StackPanel Grid.Column="1"
+                                    VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="21"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource InkBrush}"
+                                           Text="{DynamicResource MainBackupTitle}" />
+                                <Border Margin="10,1,0,0"
+                                        Padding="9,3"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource AccentSoftBrush}"
+                                        CornerRadius="10">
+                                    <TextBlock Foreground="{StaticResource AccentDarkBrush}"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Text="{DynamicResource MainRecommended}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Margin="0,5,0,0"
+                                       Foreground="{StaticResource MutedBrush}"
+                                       TextWrapping="Wrap"
+                                       Text="{DynamicResource MainBackupDescription}" />
+                        </StackPanel>
+                        <Border Grid.Column="2"
+                                Width="40"
+                                Height="40"
+                                Margin="18,0,0,0"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource AccentSoftBrush}"
+                                CornerRadius="20">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="24"
+                                       Foreground="{StaticResource AccentBrush}"
+                                       Text="›" />
+                        </Border>
+                    </Grid>
+                </Button>
+
+                <Button Margin="0,0,0,14"
+                        Style="{StaticResource ModeCardButtonStyle}"
+                        Background="#F6FFFC"
+                        BorderBrush="#BFE9DE"
+                        Click="OpenWifiRestore_Click"
+                        AutomationProperties.Name="{DynamicResource MainWifiAutomation}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="72" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="54"
+                                Height="54"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource MintGradientBrush}"
+                                CornerRadius="18">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="23"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       Text="2" />
+                        </Border>
+                        <StackPanel Grid.Column="1"
+                                    VerticalAlignment="Center">
+                            <TextBlock FontSize="21"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource InkBrush}"
+                                       Text="{DynamicResource MainWifiTitle}" />
+                            <TextBlock Margin="0,5,0,0"
+                                       Foreground="{StaticResource MutedBrush}"
+                                       TextWrapping="Wrap"
+                                       Text="{DynamicResource MainWifiDescription}" />
+                        </StackPanel>
+                        <Border Grid.Column="2"
+                                Width="40"
+                                Height="40"
+                                Margin="18,0,0,0"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource MintSoftBrush}"
+                                CornerRadius="20">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="24"
+                                       Foreground="{StaticResource MintBrush}"
+                                       Text="›" />
+                        </Border>
+                    </Grid>
+                </Button>
+
+                <Button Style="{StaticResource ModeCardButtonStyle}"
+                        Background="#FCF9FF"
+                        BorderBrush="#DDCEF5"
+                        Click="OpenBookmarkRestore_Click"
+                        AutomationProperties.Name="{DynamicResource MainBookmarkAutomation}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="72" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="54"
+                                Height="54"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource PurpleGradientBrush}"
+                                CornerRadius="18">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="23"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       Text="3" />
+                        </Border>
+                        <StackPanel Grid.Column="1"
+                                    VerticalAlignment="Center">
+                            <TextBlock FontSize="21"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource InkBrush}"
+                                       Text="{DynamicResource MainBookmarkTitle}" />
+                            <TextBlock Margin="0,5,0,0"
+                                       Foreground="{StaticResource MutedBrush}"
+                                       TextWrapping="Wrap"
+                                       Text="{DynamicResource MainBookmarkDescription}" />
+                        </StackPanel>
+                        <Border Grid.Column="2"
+                                Width="40"
+                                Height="40"
+                                Margin="18,0,0,0"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource PurpleSoftBrush}"
+                                CornerRadius="20">
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontSize="24"
+                                       Foreground="{StaticResource PurpleBrush}"
+                                       Text="›" />
+                        </Border>
+                    </Grid>
+                </Button>
+
+                <Button Margin="0,18,0,0"
+                        HorizontalAlignment="Center"
+                        Padding="22,8"
+                        Content="{DynamicResource ManualButton}"
+                        AutomationProperties.Name="{DynamicResource ManualButtonAutomation}"
+                        Click="OpenManual_Click" />
+
+                <Border Margin="0,10,0,0"
+                        Padding="16,10"
+                        HorizontalAlignment="Center"
+                        Background="#CFFFFFFF"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="18">
+                    <StackPanel>
+                        <TextBlock x:Name="BuildStatusText"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{StaticResource MutedBrush}"
+                                   FontSize="12" />
+                        <TextBlock x:Name="RuntimeInfoText"
+                                   Margin="0,4,0,0"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{StaticResource SubtleBrush}"
+                                   FontSize="12"
+                                   Text="{DynamicResource RuntimeChecking}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

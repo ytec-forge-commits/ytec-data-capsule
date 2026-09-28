@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net461</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>Ytec.WindowsBackup.App</RootNamespace>
+    <AssemblyName>Y-TEC Data Capsule</AssemblyName>
+    <Product>Y-TEC Data Capsule</Product>
+    <Description>WindowsデータのバックアップとWi-Fi・ブックマーク復元</Description>
+    <ApplicationManifest Condition="'$(UiTestBuild)' != 'true'">app.manifest</ApplicationManifest>
+    <ApplicationManifest Condition="'$(UiTestBuild)' == 'true'">app.ui-test.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\app-icon.ico</ApplicationIcon>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(UiTestBuild)' == 'true'">
+    <DefineConstants>$(DefineConstants);YTEC_UI_TEST</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ytec.WindowsBackup.Core\Ytec.WindowsBackup.Core.csproj" />
+    <ProjectReference Include="..\Ytec.WindowsBackup.Windows\Ytec.WindowsBackup.Windows.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <None Include="..\..\config\backup-items.v1.json"
+          Link="config\backup-items.v1.json"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\manual\index.html"
+          Link="操作マニュアル\index.html"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\manual\app-icon.png"
+          Link="操作マニュアル\app-icon.png"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\manual\Y-TEC Data Capsule 操作マニュアル.pdf"
+          Link="操作マニュアル\Y-TEC Data Capsule 操作マニュアル.pdf"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\manual\en\index.html"
+          Link="User Manual\index.html"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\manual\en\app-icon.png"
+          Link="User Manual\app-icon.png"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\manual\en\Y-TEC Data Capsule User Manual.pdf"
+          Link="User Manual\Y-TEC Data Capsule User Manual.pdf"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Y-TEC Data Capsule User Manual</title>
+  <link rel="icon" href="app-icon.png" type="image/png">
+  <style>
+    :root {
+      --ink: #24324a;
+      --muted: #617087;
+      --blue: #4167dc;
+      --blue-soft: #edf2ff;
+      --mint: #168b75;
+      --mint-soft: #e6f8f3;
+      --purple: #7549bf;
+      --purple-soft: #f3edfd;
+      --yellow: #8a5b0b;
+      --yellow-soft: #fff5dc;
+      --line: #dce5f1;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #f5f7fc;
+      font-family: "Segoe UI", "Yu Gothic UI", sans-serif;
+      line-height: 1.68;
+    }
+    main { max-width: 980px; margin: 0 auto; padding: 32px 24px 64px; }
+    .hero {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 24px;
+      align-items: center;
+      padding: 28px;
+      background: linear-gradient(135deg, #edf2ff, #eafaf5);
+      border: 1px solid #d5e1f4;
+      border-radius: 24px;
+    }
+    .hero img { width: 112px; height: 112px; object-fit: contain; }
+    h1 { margin: 0; font-size: 34px; line-height: 1.25; }
+    .subtitle { margin: 6px 0 0; color: var(--muted); font-size: 17px; }
+    .version {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 3px 11px;
+      border-radius: 999px;
+      background: white;
+      color: var(--mint);
+      font-weight: 700;
+    }
+    nav, section {
+      margin-top: 22px;
+      padding: 24px 28px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+    h2 {
+      margin: 0 0 14px;
+      padding-left: 12px;
+      border-left: 6px solid var(--blue);
+      font-size: 24px;
+    }
+    h3 { margin: 22px 0 8px; font-size: 18px; }
+    p { margin: 8px 0; }
+    ul, ol { margin: 8px 0; padding-left: 1.7em; }
+    li + li { margin-top: 5px; }
+    a { color: #315acb; overflow-wrap: anywhere; }
+    .toc { columns: 2; column-gap: 32px; }
+    .toc a { display: block; padding: 4px 0; text-decoration: none; }
+    .mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .mode { padding: 16px; border: 1px solid var(--line); border-radius: 14px; }
+    .mode.blue { background: var(--blue-soft); }
+    .mode.mint { background: var(--mint-soft); }
+    .mode.purple { background: var(--purple-soft); }
+    .step {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: start;
+      margin: 14px 0;
+    }
+    .step-num {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      color: white;
+      background: var(--blue);
+      border-radius: 11px;
+      font-weight: 700;
+    }
+    .note, .warning, .danger {
+      margin: 14px 0;
+      padding: 14px 16px;
+      border: 1px solid;
+      border-radius: 12px;
+    }
+    .note { background: var(--mint-soft); border-color: #bde6da; }
+    .warning { color: #694608; background: var(--yellow-soft); border-color: #efd49b; }
+    .danger { color: #8e3440; background: #fff0f2; border-color: #f1c4ca; }
+    table { width: 100%; margin-top: 12px; border-collapse: collapse; font-size: 14px; }
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f2f5fb; }
+    code {
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: #f1f4f9;
+      font-family: Consolas, monospace;
+      font-size: .92em;
+      overflow-wrap: anywhere;
+    }
+    .footer { margin-top: 24px; color: var(--muted); text-align: center; font-size: 12px; }
+    @media (max-width: 700px) {
+      main { padding: 16px 12px 40px; }
+      .hero { grid-template-columns: 72px 1fr; padding: 20px; }
+      .hero img { width: 72px; height: 72px; }
+      h1 { font-size: 25px; }
+      nav, section { padding: 20px; }
+      .toc { columns: 1; }
+      .mode-grid { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media print {
+      @page { size: A4; margin: 13mm 14mm 15mm; }
+      body { background: white; font-size: 10.2pt; line-height: 1.46; orphans: 3; widows: 3; }
+      main { max-width: none; padding: 0; }
+      .hero, nav, section { border-radius: 10px; box-shadow: none; }
+      nav, section { margin-top: 12px; padding: 16px 18px; }
+      .hero, nav, .mode-grid, .step, .note, .warning, .danger, table, tr {
+        break-inside: avoid-page;
+      }
+      .rights-block { break-inside: avoid-page; }
+      section { break-inside: auto; }
+      #support { break-before: page; break-inside: avoid-page; }
+      h2, h3 { break-after: avoid-page; text-wrap: balance; }
+      p, li, td { text-wrap: pretty; }
+      li { break-inside: avoid-page; }
+      thead { display: table-header-group; }
+      #items, #restore-basics, #thunderbird, #mobilesync, #postcard,
+      #accounting, #bookmark { break-before: page; }
+      #postcard { font-size: 9.5pt; line-height: 1.4; }
+      #postcard table { font-size: 9.2pt; }
+      #postcard th, #postcard td { padding: 6px 8px; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <img src="app-icon.png" alt="Y-TEC Data Capsule icon">
+    <div>
+      <h1>Y-TEC Data Capsule<br>User Manual</h1>
+      <p class="subtitle">From creating a backup to validating it on the new PC</p>
+      <span class="version">1.2.0 republish (self-signed) / Manual revised September 29, 2026</span>
+    </div>
+  </header>
+
+  <nav aria-label="Table of contents">
+    <h2>Table of contents</h2>
+    <div class="toc">
+      <a href="#before">1. Before you begin</a>
+      <a href="#modes">2. Three startup modes</a>
+      <a href="#backup">3. Create a data backup</a>
+      <a href="#items">4. Backup items and output</a>
+      <a href="#restore-basics">5. General manual migration</a>
+      <a href="#thunderbird">6. Thunderbird</a>
+      <a href="#mobilesync">7. iPhone / iPad (MobileSync)</a>
+      <a href="#postcard">8. Postcard and address-book software</a>
+      <a href="#accounting">9. Accounting software</a>
+      <a href="#wifi">10. Restore Wi-Fi profiles</a>
+      <a href="#bookmark">11. Restore bookmarks</a>
+      <a href="#security">12. Storage, access, and rights</a>
+      <a href="#trouble">13. Troubleshooting</a>
+      <a href="#support">14. Official downloads and contact</a>
+    </div>
+  </nav>
+
+  <section id="before">
+    <h2>1. Before you begin</h2>
+    <ul>
+      <li>Technical targets are Windows 7 SP1, 8, 8.1, 10, and 11 with .NET Framework 4.6.1 or later. The AnyCPU build supports 32-bit and 64-bit Windows; Windows 11 has no 32-bit OS edition.</li>
+      <li>Extract the ZIP to a folder and double-click <code>Y-TEC Data Capsule.exe</code>. Keep the EXE with its DLLs, catalog, and manual folders.</li>
+      <li>The app requests administrator privileges automatically. Check the source, then approve the Windows UAC prompt. You do not need to right-click “Run as administrator” every time.</li>
+      <li>The republished 1.2.0 EXE and bundled DLLs use Y-TEC self-signing. This is not a signature trusted by Microsoft or a commercial CA, and Windows or SmartScreen may display warnings. Check the official download source and published SHA-256 values. No public certificate is installed automatically.</li>
+      <li>The app performs no network communication, cloud synchronization, or analytics. It does not download online-only OneDrive or iCloud content.</li>
+    </ul>
+    <p>Technical compatibility with older Windows and .NET Framework 4.6.1 does not imply current Microsoft servicing. Older OS compatibility refers to historical tests, not a new test of every OS for this republication.</p>
+    <div class="warning"><strong>Do not erase the old PC just because the backup completed.</strong> Open required files on the destination PC and confirm that Thunderbird, postcard, accounting, and Apple applications recognize their data first.</div>
+  </section>
+
+  <section id="modes">
+    <h2>2. Three startup modes</h2>
+    <div class="mode-grid">
+      <div class="mode blue"><strong>1 Data Backup</strong><br>Save documents, photos, bookmarks, mail, address books, accounting data, MobileSync, Wi-Fi profiles, and more.</div>
+      <div class="mode mint"><strong>2 Restore Wi-Fi Profiles</strong><br>Register profiles encrypted by Data Capsule on another Windows PC.</div>
+      <div class="mode purple"><strong>3 Restore Browser Bookmarks</strong><br>Restore only Chrome, Edge, or Firefox bookmarks.</div>
+    </div>
+  </section>
+
+  <section id="backup">
+    <h2>3. Create a data backup</h2>
+    <div class="step"><span class="step-num">1</span><div><strong>Select the source Windows drive.</strong><br>Only internal or USB drives with a root-level <code>Windows</code> folder appear. Select “Scan Again” after connecting a USB drive.</div></div>
+    <div class="step"><span class="step-num">2</span><div><strong>Select the destination location.</strong><br>Choose the parent folder where a new backup folder will be created, such as an external SSD. A location inside the source Windows drive is not allowed.</div></div>
+    <div class="step"><span class="step-num">3</span><div><strong>Enter a new folder name.</strong><br>For example, <code>20260728-Full-Backup</code>. If the same file or folder name already exists, choose another name.</div></div>
+    <div class="step"><span class="step-num">4</span><div><strong>Select backup items.</strong><br>Use Select All, Clear All, a group checkbox, or individual item checkboxes. Expand the arrow beside a group to show its items.</div></div>
+    <div class="step"><span class="step-num">5</span><div><strong>Review the contents.</strong><br>Check the file count, planned size, warnings, and final output path. If cloud placeholders were found, review the skipped count and displayed logical size. Review again after changing any setting.</div></div>
+    <div class="step"><span class="step-num">6</span><div><strong>Start the backup.</strong><br>Read the confirmation first. When backing up current browser bookmarks, the target browsers close automatically. Save unfinished form input before continuing.</div></div>
+    <div class="note">After completion, select “Open Created Folder” and review <code>backup-manifest.v1.json</code> for copied files, failures, warnings, and ACL results. Never disconnect the destination while copying.</div>
+  </section>
+
+  <section id="items">
+    <h2>4. Backup items and output</h2>
+    <p>Ordinary files are placed under <code>data</code>; Wi-Fi settings are placed under <code>windows-settings</code>. Source-relative paths are preserved so each source user remains identifiable.</p>
+    <table>
+      <thead><tr><th>Group</th><th>Scope and notes</th></tr></thead>
+      <tbody>
+        <tr><td>Basic data</td><td>Desktop, Documents, Downloads, Pictures, Music, and Videos. Only files fully available on the PC are copied from OneDrive, iCloud, and similar locations.</td></tr>
+        <tr><td>Browsers</td><td>IE, Chrome, Edge, and Firefox bookmarks only. Passwords, cookies, history, and sessions are excluded.</td></tr>
+        <tr><td>Mail</td><td>Thunderbird, Outlook data, and Windows Mail data. VSS is attempted for files in use; a warning is recorded when a file still cannot be read.</td></tr>
+        <tr><td>Device data</td><td>iPhone and iPad MobileSync in both AppData and the user-profile Store-app location.</td></tr>
+        <tr><td>Windows settings</td><td>Wi-Fi profiles from the PC running Data Capsule, encrypted for transfer to another PC.</td></tr>
+        <tr><td>Postcard software</td><td>Personal and Public / All Users address-book candidates are searched separately and organized by product. See section 8.</td></tr>
+        <tr><td>Accounting software</td><td>Yayoi Accounting / Yayoi Blue Return and FreeWay Accounting candidates. Always prioritize the official product backup.</td></tr>
+      </tbody>
+    </table>
+    <h3>Example output paths</h3>
+    <ul>
+      <li><code>E:\20260728-Full-Backup\data\Users\OldUser\Documents</code></li>
+      <li><code>E:\20260728-Full-Backup\data\年賀状ソフト\筆王</code></li>
+      <li><code>E:\20260728-Full-Backup\data\年賀状ソフト\共有住所録\筆ぐるめ</code></li>
+      <li><code>E:\20260728-Full-Backup\data\会計ソフト\弥生会計・やよいの青色申告</code></li>
+      <li><code>E:\20260728-Full-Backup\windows-settings\wifi</code></li>
+    </ul>
+  </section>
+
+  <section id="restore-basics">
+    <h2>5. General manual migration and restore</h2>
+    <p>Except for Wi-Fi profiles and browser bookmarks, Data Capsule does not inject data into destination applications. Use this order:</p>
+    <ol>
+      <li><strong>Preserve the backup root:</strong> Keep the top-level folder containing <code>backup-manifest.v1.json</code> unchanged until the migration is fully validated.</li>
+      <li><strong>Install the destination application first:</strong> Prefer the same version as the source, or a compatible version documented by the vendor. Launch it once so it creates its folders.</li>
+      <li><strong>Exit the application:</strong> Never replace files while the application or its tray process is using them.</li>
+      <li><strong>Protect destination data:</strong> Rename or copy the current destination folder so that you can roll back.</li>
+      <li><strong>Copy or import only what is needed:</strong> Copy from <code>data\Users\OldUser</code> into the current user's destination. Use Copy, not Move.</li>
+      <li><strong>Validate in the application:</strong> Check files, counts, dates, years, and accounts. Do not erase the old PC or backup until validation succeeds.</li>
+    </ol>
+    <div class="danger"><strong>Do not overwrite all of AppData.</strong> Different Windows versions, application versions, and user names can prevent startup or corrupt settings. Use the dedicated Thunderbird, MobileSync, postcard, and accounting instructions below.</div>
+    <h3>Common destinations for basic data</h3>
+    <table>
+      <thead><tr><th>Path inside the backup</th><th>Usual destination</th></tr></thead>
+      <tbody>
+        <tr><td><code>data\Users\OldUser\Desktop</code></td><td>The current user's Desktop</td></tr>
+        <tr><td><code>...\Documents</code></td><td>The current user's Documents</td></tr>
+        <tr><td><code>...\Pictures</code></td><td>The current user's Pictures</td></tr>
+        <tr><td><code>...\Downloads</code></td><td>The current user's Downloads. Recheck the source of executable files before opening them.</td></tr>
+      </tbody>
+    </table>
+    <div class="note"><strong>OneDrive, iCloud, and similar folders:</strong> Only fully local files are copied. Online-only and partially retrieved files are skipped without being opened, so the app will not trigger a large download. Review skipped counts in the plan, completion dialog, and manifest. Download only required source files and run a new backup, or sync them again from the same cloud service on the destination.</div>
+  </section>
+
+  <section id="thunderbird">
+    <h2>6. Thunderbird</h2>
+    <h3>What is and is not backed up</h3>
+    <table>
+      <thead><tr><th>Included</th><th>Excluded</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Message stores, POP and Local Folders, local IMAP data, account settings, address books, filters, calendars, add-ons, and other profile data.</td>
+          <td>Known saved-password databases, key databases, cookies, and session or crash-recovery files, including <code>logins.json</code>, <code>key3.db</code>, <code>key4.db</code>, <code>signons*</code>, <code>cookies.sqlite*</code>, and common <code>session</code>/<code>recovery</code> files.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning">Re-enter each mail-account password after restore. IMAP data can normally resynchronize from its server, but downloaded POP mail and Local Folders depend especially on the backup.</div>
+
+    <h3>Recommended: use Thunderbird's import tool</h3>
+    <ol>
+      <li>Install Thunderbird on the destination PC, preferably the same or a newer stable version.</li>
+      <li>Locate <code>data\Users\OldUser\AppData\Roaming\Thunderbird\Profiles\ProfileName</code>. Older Windows layouts may use <code>Application Data\Thunderbird\Profiles</code>.</li>
+      <li>In Thunderbird, open Menu (≡) > Tools > Import.</li>
+      <li>Choose Import from another Thunderbird installation, then choose the profile folder found in step 2.</li>
+      <li>Select the account settings, messages, address books, and other required items, then start the import.</li>
+      <li>After restart, check message counts, Local Folders, and address books, and re-enter requested passwords.</li>
+    </ol>
+    <p>Mozilla documents a 2 GB limit for importing a ZIP. Data Capsule does not create a Thunderbird ZIP, so choose the profile folder directly for large profiles.</p>
+
+    <h3>Alternative: replace the Thunderbird folder</h3>
+    <ol>
+      <li>Launch Thunderbird once on the destination PC, then exit it completely.</li>
+      <li>Open <code>%APPDATA%</code> and rename the current <code>Thunderbird</code> folder to a rollback name such as <code>Thunderbird.before-restore</code>.</li>
+      <li>Copy the backed-up <code>AppData\Roaming\Thunderbird</code> folder into the destination <code>%APPDATA%</code>.</li>
+      <li>Start Thunderbird and validate it. If it fails, restore the renamed folder and use the import tool instead.</li>
+    </ol>
+    <div class="note">Mozilla guidance: <a href="https://support.mozilla.org/en-US/kb/thunderbird-import">Import settings and data into Thunderbird</a> / <a href="https://support.mozilla.org/en-US/kb/moving-thunderbird-data-to-a-new-computer">Move Thunderbird data to a new computer</a> (Internet access is required to open these links).</div>
+  </section>
+
+  <section id="mobilesync">
+    <h2>7. iPhone / iPad (MobileSync)</h2>
+    <h3>Locations saved by Data Capsule</h3>
+    <ul>
+      <li>Desktop iTunes: <code>data\Users\OldUser\AppData\Roaming\Apple Computer\MobileSync</code></li>
+      <li>Microsoft Store iTunes / Apple Devices: <code>data\Users\OldUser\Apple\MobileSync</code></li>
+    </ul>
+    <p>Both are saved when both exist. The actual device backups are long alphanumeric folders under each <code>MobileSync\Backup</code>. Do not rename these folders or edit their contents.</p>
+
+    <h3>Make the destination recognize and restore the backup</h3>
+    <ol>
+      <li>Install and update Apple Devices or the intended version of iTunes on the destination PC.</li>
+      <li>Launch it once. In Apple Devices, use General > Manage Backups > Show in Explorer to identify the actual destination <code>Backup</code> folder.</li>
+      <li>Exit Apple Devices or iTunes completely.</li>
+      <li>Copy the per-device folders from the backed-up <code>MobileSync\Backup</code> into the destination <code>MobileSync\Backup</code>. If a name already exists, back up the destination copy first; do not merge blindly.</li>
+      <li>Open the app and confirm the device and date under Manage Backups, or in iTunes under Edit > Preferences > Devices.</li>
+      <li>Connect the iPhone or iPad and approve “Trust This Computer” on the device.</li>
+      <li>Choose Restore Backup under General in Apple Devices, or under Summary in iTunes, and select the intended backup.</li>
+    </ol>
+    <div class="danger"><strong>An encrypted local Apple backup requires the password used when it was created.</strong> Data Capsule does not save, recover, or bypass that password. An encrypted backup cannot be restored without it.</div>
+    <p>If the backup is missing from the list, check the destination layout, make sure it is not nested as <code>Backup\Backup</code>, and confirm that the per-device folder name and contents were not changed.</p>
+    <div class="note">Apple guidance: <a href="https://support.apple.com/en-us/108809">Locate and manage backups</a> / <a href="https://support.apple.com/guide/devices-windows/mchla3c8ed03/windows">Back up and restore with Apple Devices on Windows</a> (Internet access is required to open these links).</div>
+  </section>
+
+  <section id="postcard">
+    <h2>8. Postcard and address-book software</h2>
+    <p>Data Capsule classifies candidate address books for the following Japanese postcard products, keeping personal and shared candidates separate. Selecting the entire Postcard Software group includes both items.</p>
+    <table>
+      <thead><tr><th>Backup item</th><th>Locations searched</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td>Postcard and address-book data</td><td>Each user's Documents / My Documents / Desktop</td><td><code>data\年賀状ソフト\ProductName</code></td></tr>
+        <tr><td>Shared postcard address-book data</td><td><code>Users\Public\Documents</code>, <code>Users\Public\Desktop</code>, and older All Users equivalents</td><td><code>data\年賀状ソフト\共有住所録\ProductName</code></td></tr>
+      </tbody>
+    </table>
+    <div class="note">For example, a Fudegurume <code>.FGA</code> address book under <code>Public\Documents\みんなの筆ぐるめ</code> is stored under <code>data\年賀状ソフト\共有住所録\筆ぐるめ</code>, separate from personal data.</div>
+    <h3>Supported products and principal candidates</h3>
+    <table>
+      <thead><tr><th>Product</th><th>Principal candidate</th></tr></thead>
+      <tbody>
+        <tr><td>Fudeoh (筆王)</td><td><code>.FZD</code></td></tr>
+        <tr><td>Fudegurume (筆ぐるめ)</td><td><code>.FGA</code></td></tr>
+        <tr><td>Fudemame (筆まめ)</td><td><code>.FWA</code> / <code>.FWB</code> / <code>.SDL</code></td></tr>
+        <tr><td>Rakuraku Hagaki (楽々はがき)</td><td><code>.JSR</code></td></tr>
+        <tr><td>Atena Shokunin (宛名職人)</td><td><code>.ATA</code></td></tr>
+        <tr><td>Fudeyasume (筆休め)</td><td><code>.FYA</code></td></tr>
+        <tr><td>Hagaki Studio (はがきスタジオ)</td><td><code>.HSA</code> / <code>.HSD</code></td></tr>
+        <tr><td>Hagaki Sakka (はがき作家)</td><td><code>.HWA</code> / <code>.HWC</code> / <code>.HWL</code></td></tr>
+        <tr><td>Hagaki Design Kit (はがきデザインキット)</td><td>Candidate user-data folders</td></tr>
+      </tbody>
+    </table>
+    <h3>Migration and restore</h3>
+    <ol>
+      <li>Install a compatible edition of the same product on the destination PC.</li>
+      <li>Use the vendor's Open Address Book, Import Another Format, or Restore Backup command.</li>
+      <li>Choose personal files under <code>data\年賀状ソフト\ProductName</code> or shared files under <code>data\年賀状ソフト\共有住所録\ProductName</code>.</li>
+      <li>Validate names, postal codes, addresses, and record counts. Always preview before printing.</li>
+    </ol>
+    <div class="warning">Address-book formats can vary by product and version. Data Capsule copies and classifies candidates but does not restore them inside the product. Follow official vendor migration instructions when available.</div>
+  </section>
+
+  <section id="accounting">
+    <h2>9. Accounting software</h2>
+    <div class="danger"><strong>Accounting-data detection, classification, and copying are implemented and verified with synthetic data, but import acceptance with the commercial accounting applications was omitted from this release decision.</strong> Never use Data Capsule as the only accounting backup.</div>
+    <h3>Current automatic targets</h3>
+    <ul>
+      <li>Yayoi Accounting / Yayoi Blue Return: candidate business data under Documents</li>
+      <li>FreeWay Accounting: <code>KAIKEI_K</code> at the root of the selected Windows drive</li>
+    </ul>
+    <h3>Migration and restore</h3>
+    <ol>
+      <li>On the source PC, use the accounting product's official procedure to create a backup.</li>
+      <li>Use Data Capsule's accounting item only as an additional copy beside that official backup.</li>
+      <li>Install a compatible edition of the accounting product on the destination PC.</li>
+      <li>Restore the official backup first through the product's Restore Backup or Open Business Data command.</li>
+      <li>If the Data Capsule copy is needed, copy from <code>data\会計ソフト\ProductName</code> to the vendor-specified location and select it through the product's Open command.</li>
+      <li>Compare the business name, fiscal year, opening and closing periods, balances, and journal-entry count.</li>
+    </ol>
+    <p>Products such as PCA Accounting and Blue Return A that require a dedicated in-product backup are intentionally not automatic targets. Use only their official backup and restore procedures.</p>
+  </section>
+
+  <section id="wifi">
+    <h2>10. Restore Wi-Fi profiles</h2>
+    <ol>
+      <li>Select Restore Wi-Fi Profiles on the startup screen.</li>
+      <li>Select the top-level backup folder, for example <code>E:\20260728-Full-Backup</code>.</li>
+      <li>The app locates <code>windows-settings\wifi\wifi-profiles.ywbwifi</code> automatically.</li>
+      <li>Review the warning, then select Restore Wi-Fi Profiles.</li>
+      <li>Confirm that Windows can connect to the intended network.</li>
+    </ol>
+    <div class="warning">An existing Windows profile with the same SSID may be updated. SSIDs and passwords are never displayed or logged. The embedded-key encryption prevents casual plaintext exposure but has limited resistance to detailed executable analysis.</div>
+  </section>
+
+  <section id="bookmark">
+    <h2>11. Restore browser bookmarks</h2>
+    <ol>
+      <li>Select Restore Browser Bookmarks on the startup screen.</li>
+      <li>Select the top-level backup folder. The app locates supported bookmark files automatically.</li>
+      <li>Select the source backup user and browser profile.</li>
+      <li>Save unfinished form input before starting. The target browser is asked to exit; remaining background processes are terminated.</li>
+      <li>For Chrome or Edge, confirm the destination profile. The current <code>Bookmarks</code> and <code>Bookmarks.bak</code> are saved to a rollback folder before replacement.</li>
+      <li>For Firefox, the app validates and locates the backup. In Firefox use Manage Bookmarks > Import and Backup > Restore > Choose File.</li>
+      <li>Start the browser and confirm the bookmark bar and folder structure.</li>
+    </ol>
+    <div class="note">Only bookmarks are restored. Passwords, cookies, history, and sessions are untouched. If the browser executable cannot be identified safely, the app does not start the restore and asks you to close it manually.</div>
+  </section>
+
+  <section id="security">
+    <h2>12. Storage formats, access control, and rights</h2>
+    <table>
+      <thead><tr><th>Destination</th><th>Behavior</th></tr></thead>
+      <tbody>
+        <tr><td>NTFS / ReFS</td><td>After completion, only the new backup output from the current run receives owner Everyone and inheritable full control. Source owners and ACLs are unchanged.</td></tr>
+        <tr><td>exFAT</td><td>Backup is allowed. exFAT cannot store Windows owners or ACLs, so Everyone ACL processing is skipped.</td></tr>
+        <tr><td>FAT32</td><td>Rejected before copying because of restrictions such as the 4 GB single-file limit.</td></tr>
+      </tbody>
+    </table>
+    <div class="warning">Everyone full control and exFAT make backup content easy to read or modify for anyone who can connect the drive. Protect personal backups physically, consider BitLocker or other drive encryption, and securely erase them when no longer required.</div>
+    <div class="rights-block">
+      <h3>Rights and license</h3>
+      <ul>
+        <li>Y-TEC-owned code, documentation, icon artwork, and screenshots are licensed under Apache License 2.0.</li>
+        <li>Modification, commercial use, and redistribution are permitted under that license. Retain the license, NOTICE, and third-party notices.</li>
+        <li>See <code>LICENSE.txt</code>, <code>NOTICE</code>, <code>BRAND_POLICY.md</code>, <code>ASSET_PROVENANCE.md</code>, and <code>THIRD-PARTY-NOTICES.txt</code>. Modified builds must not imply Y-TEC approval or official status.</li>
+        <li>Product names, company names, and trademarks belong to their respective owners. Data Capsule is not an official product of any listed software vendor.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="trouble">
+    <h2>13. Troubleshooting</h2>
+    <table>
+      <thead><tr><th>Symptom</th><th>What to check</th></tr></thead>
+      <tbody>
+        <tr><td>The source drive does not appear</td><td>Confirm a root-level Windows folder and a recognized USB connection, then select Scan Again.</td></tr>
+        <tr><td>Backup cannot start</td><td>Check administrator privileges, the new folder name, existing names, free space, destination format, and whether the plan was reviewed again.</td></tr>
+        <tr><td>Wi-Fi or bookmarks are not found</td><td>Select the top-level folder containing <code>backup-manifest.v1.json</code>, not an internal data folder.</td></tr>
+        <tr><td>A browser cannot close</td><td>Save unfinished work, close the browser and its background tray process manually, then retry.</td></tr>
+        <tr><td>Thunderbird import fails</td><td>Select the actual <code>Profiles\ProfileName</code>, use the same or a newer Thunderbird version, or restore the rollback made before folder replacement.</td></tr>
+        <tr><td>MobileSync is missing</td><td>Use Manage Backups to open the real destination and check for accidental <code>Backup\Backup</code> nesting or changed folder names.</td></tr>
+        <tr><td>OneDrive / iCloud file count is low</td><td>Online-only files are intentionally skipped. Download only required source files and create a new backup, or sync them on the destination PC.</td></tr>
+        <tr><td>Some files failed</td><td>Review warnings in <code>backup-manifest.v1.json</code>, exit the relevant app, and retry with a new backup folder name.</td></tr>
+        <tr><td>The manual does not open</td><td>Extract the ZIP again and keep the EXE with its folders. The PDF is in the <code>User Manual</code> folder.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="support">
+    <h2>14. Official downloads and contact</h2>
+    <p>Product page and downloads: <a href="https://ytec.cloudfree.jp/forge/en/projects/data-capsule/">https://ytec.cloudfree.jp/forge/en/projects/data-capsule/</a></p>
+    <p>Contact: <a href="https://ytec.cloudfree.jp/forge/contact/">https://ytec.cloudfree.jp/forge/contact/</a></p>
+    <p>For an update, obtain a new ZIP from the official product page and extract it to a separate folder. Keep your existing backups and do not erase data on the original PC.</p>
+    <p>Include the app version, Windows version, steps, and a summary of the error when contacting Y-TEC. Do not send real backups, personal data, Wi-Fi SSIDs or passwords, or credentials. Opening the links above requires internet access.</p>
+  </section>
+
+  <p class="footer">Y-TEC Data Capsule User Manual 1.2.0 - No telemetry, network communication, or cloud sync</p>
+</main>
+</body>
+</html>

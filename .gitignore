@@ -1,0 +1,17 @@
+bin/
+obj/
+artifacts/
+/release/
+.vs/
+*.user
+*.suo
+TestResults/
+.validation/
+.playwright-cli/
+output/
+tmp/
+*.key
+*.pfx
+*.p12
+*.ywbwifi
+.release-secrets/
