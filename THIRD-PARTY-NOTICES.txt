@@ -1,12 +1,12 @@
 Y-TEC Data Capsule
 Third-Party Notices
 
-License inventory last reviewed: 2026-08-26
+License inventory last reviewed: 2026-10-24
 
 Distributed runtime component
 -----------------------------
 
-Newtonsoft.Json 13.0.3
+Newtonsoft.Json 13.0.4
 https://www.newtonsoft.com/json
 
 The MIT License (MIT)

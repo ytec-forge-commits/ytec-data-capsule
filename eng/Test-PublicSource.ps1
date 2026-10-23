@@ -101,7 +101,7 @@ if (
     $brandPolicy -notmatch 'Apache License 2\.0' -or
     $assetProvenance -notmatch 'OpenAI' -or
     $assetProvenance -notmatch 'Apache-2\.0' -or
-    $thirdPartyNotices -notmatch 'Newtonsoft\.Json 13\.0\.3' -or
+    $thirdPartyNotices -notmatch 'Newtonsoft\.Json 13\.0\.4' -or
     $thirdPartyNotices -notmatch 'The MIT License'
 ) {
     throw '公開用ライセンス・帰属・ブランド・アセット・第三者通知の境界が不正です。'
